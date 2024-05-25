@@ -13,13 +13,11 @@ import TheMain from "./components/TheMain.vue"
 </template>
 
 <style scoped>
-  *{
-    margin:0;
-  }
+* {
+  margin: 0;
+}
 
-  main{
-    background-color: aliceblue;
-    padding:10px;
-  }
-
+main {
+  padding: 10px;
+}
 </style>

@@ -147,7 +147,7 @@ const panelStyle = (panel) => {
         'top': panel.y * 100 / rowN.value + '%',
         'width': 100 / colN.value + '%',
         'height': 100 / rowN.value + '%',
-        'background-image': `url("public/valid_${imgNo.value}.jpg")`,
+        'background-image': `url("/valid_${imgNo.value}.jpg")`,
         "background-position": panel.correctX * 100 / (colN.value - 1) + '% ' + panel.correctY * 100 / (rowN.value - 1) + '%'
     }
     //"url('../assets/valid_3.jpg')"だとなぜかダメ。
@@ -238,7 +238,8 @@ button {
 
 p.count {
     position: absolute;
-    top: -50px;
+    top: -60px;
     left: calc(50% - 30px);
+    font-size: 1.2rem;
 }
 </style>
