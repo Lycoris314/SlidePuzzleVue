@@ -189,15 +189,15 @@ const panelStyle = (panel) => {
 }
 
 .field {
-    height: min(500px, 70vh);
-    width: min(500px, 70vh);
+    height: max(700px, 70vh);
+    width: max(700px, 70vh);
     position: relative;
     border: 5px solid silver;
 }
 
 .panel,
 .emptyPanel {
-    background-size: min(500px, 70vh) min(500px, 70vh);
+    background-size: max(700px, 70vh) max(700px, 70vh);
     display: grid;
     place-content: center;
     position: absolute;

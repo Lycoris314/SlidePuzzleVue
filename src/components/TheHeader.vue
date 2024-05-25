@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <h1>Slide Puzzle Vue</h1>
+    <h1>Slide Puzzle</h1>
 </template>
 
 <style scoped>
