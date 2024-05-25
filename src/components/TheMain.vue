@@ -1,6 +1,9 @@
 <script setup>
 
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
+
+onMounted(() => { document.onselectstart = () => false; })
+
 
 class Panel {
     num;
@@ -23,6 +26,8 @@ const row = ref(3);
 const colN = ref(3);
 const rowN = ref(3);
 
+const imgNo = ref(0);
+
 const count = ref(0);
 
 const p1 = new Panel(1, 0, 0);
@@ -43,8 +48,9 @@ const panels = ref([p1, p2, p3, p4, p5, p6, p7, p8]);
 const emptyPanel = ref(p9);
 
 const isClear = computed(() => {
-    return panels.value.every((p) => { 
-        return p.x == p.correctX && p.y == p.correctY })
+    return panels.value.every((p) => {
+        return p.x == p.correctX && p.y == p.correctY
+    })
 })
 
 
@@ -52,7 +58,7 @@ const isClear = computed(() => {
 function movePanel(panel) {
     const empX = emptyPanel.value.x;
     const empY = emptyPanel.value.y;
-    if(isClear.value){
+    if (isClear.value) {
         return;
     }
 
@@ -91,15 +97,11 @@ function movePanel(panel) {
         }
         count.value++;
     }
-    // emptyPanel.value.x = panel.x;
-    // emptyPanel.value.y = panel.y;
-    // panel.x = empX;
-    // panel.y = empY;
 }
 
 function shuffle() {
 
-    count.value=0;
+    count.value = 0;
 
     colN.value = col.value;
     rowN.value = row.value;
@@ -129,7 +131,7 @@ function randomExchange() {
 
     const r1 = Math.floor(Math.random() * length);
     const r2 = (r1 + Math.floor(Math.random() * (length - 1)) + 1) % length;
-    //console.log(panels.value[r1],r2)
+
     exchange(panels.value[r1], panels.value[r2]);
 }
 
@@ -137,48 +139,65 @@ function exchange(p, q) {
     let a, b;
     a = p.x; p.x = q.x; q.x = a;
     b = p.y; p.y = q.y; q.y = b;
-    //console.log(p.x,q.x,p.y,q.y)
+}
+
+const panelStyle = (panel) => {
+    return {
+        "left": panel.x * 100 / colN.value + '%',
+        'top': panel.y * 100 / rowN.value + '%',
+        'width': 100 / colN.value + '%',
+        'height': 100 / rowN.value + '%',
+        'background-image': `url("src/assets/valid_${imgNo.value}.jpg")`,
+        "background-position": panel.correctX * 100 / (colN.value - 1) + '% ' + panel.correctY * 100 / (rowN.value - 1) + '%'
+    }
+    //"url('../assets/valid_3.jpg')"だとなぜかダメ。
 }
 
 
 </script>
 
 <template>
-    <div class="field">
+    <div class="container">
+        <div class="field">
 
-        <div v-for="panel in panels" class="panel" :style="{
-            'left': panel.x * 100 / colN + '%',
-            'top': panel.y * 100 / rowN + '%',
-            'width': 100 / colN + '%',
-            'height': 100 / rowN + '%'
-        }" @click="movePanel(panel)">{{ panel.num }}</div>
+            <div v-for="panel in panels" class="panel" :style=panelStyle(panel) @click="movePanel(panel)">{{ panel.num
+                }}
+            </div>
 
-        <div class="emptyPanel" :class="{ visible: isClear }" :style="{
-            'left': emptyPanel.x * 100 / colN + '%',
-            'top': emptyPanel.y * 100 / rowN + '%',
-            'width': 100 / colN + '%',
-            'height': 100 / rowN + '%'
-        }">{{ emptyPanel.num }}</div>
+            <div class="emptyPanel" :class="{ visible: isClear }" :style=panelStyle(emptyPanel)>{{ emptyPanel.num }}
+            </div>
+        </div>
+        <div class="flex"><button class="shuffle" @click="shuffle">Shuffle!</button>
+            <button class="imgChange" @click="imgNo = (imgNo + 1) % 4">画像切り替え</button>
+        </div>
+        <div class="flex">
+            <span>列数：<input class="num" type="number" v-model="col" max="10"></span>
+            <span>行数：<input class="num" type="number" v-model="row" max="10"></span>
+        </div>
+
+
+        <p class="count">count:{{ count }}</p>
+        <!-- <p v-if="isClear">Clear!!</p> -->
     </div>
-
-    <p>列数：<input type="number" v-model="col" max="10"></p>
-    <p>行数：<input type="number" v-model="row" max="10"></p>
-
-    <button @click="shuffle">Shuffle</button>
-    <p>count:{{ count }}</p>
-    <p v-if="isClear">Clear!!</p>
 </template>
 
 <style scoped>
-.field {
-    height: 500px;
-    width: 500px;
+.container {
+    width: max-content;
+    margin: 0 auto;
     position: relative;
+}
+
+.field {
+    height: min(500px, 70vh);
+    width: min(500px, 70vh);
+    position: relative;
+    border: 5px solid silver;
 }
 
 .panel,
 .emptyPanel {
-    background-color: pink;
+    background-size: min(500px, 70vh) min(500px, 70vh);
     display: grid;
     place-content: center;
     position: absolute;
@@ -191,5 +210,35 @@ function exchange(p, q) {
 
 .visible {
     opacity: 1;
+}
+
+input.num {
+    width: 40px;
+}
+
+p {
+    text-align: center;
+}
+
+.flex {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+button {
+    cursor: pointer;
+    background-color: rgb(53, 120, 178);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 2px 5px;
+}
+
+p.count {
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 30px);
 }
 </style>
