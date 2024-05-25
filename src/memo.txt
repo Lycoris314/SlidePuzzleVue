@@ -2,3 +2,5 @@ npm run dev
 npm run build
 npm run preview
 
+画像はpublic フォルダに置く。
+そしてpublicは省略した名前で指定する。
